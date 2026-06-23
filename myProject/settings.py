@@ -39,7 +39,11 @@ SECRET_KEY = os.environ.get(
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 # Hosts: localhost for dev, plus Railway's domain and anything from DJANGO_ALLOWED_HOSTS.
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.railway.app', '.up.railway.app']
+ALLOWED_HOSTS = [
+    'localhost', '127.0.0.1',
+    'mepkinappv2-production.up.railway.app',
+    '.railway.app', '.up.railway.app',
+]
 ALLOWED_HOSTS += _env_list('DJANGO_ALLOWED_HOSTS')
 _railway_host = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
 if _railway_host:
