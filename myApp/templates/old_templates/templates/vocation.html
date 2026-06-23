@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="bg-secondary text-white sticky-top">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center py-2">
+            <h1>
+                <span class="me-4">
+                    <a href="{% url 'home' %}" class="text-decoration-none text-white">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                </span>
+                Vocation
+            </h1>
+            <img src="{% static 'MEPKING/logo.png' %}" height="75rem" alt="Mepkin Abbey Logo">
+        </div>
+    </div>
+</div>
+
+<div class="container mt-3">
+    <p>
+        Discover the path to becoming a monk at Mepkin Abbey. Explore the basic requirements, considerations, and opportunities for a monastic experience, whether for a month or a year.
+    </p>
+
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+        <div class="col">
+            <a href="https://mepkinabbey.org/becoming-a-monk/requirements/" target="_blank" class="text-decoration-none">
+                <div class="card border-0">
+                    <img src="{% static 'MEPKING/Basic Requirements.jpeg' %}" class="card-img rounded-3" alt="Basic Requirements for Becoming a Monk at Mepkin Abbey" style="height: 15rem; object-fit: cover;">
+                    <div class="card-img-overlay">
+                        <h6 class="card-text fw-bold position-absolute bottom-0 mb-2 p-2" style="color: #fff; background-color: rgba(0, 0, 0, 0.6)">
+                            Basic Requirements
+                        </h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col">
+            <a href="https://mepkinabbey.org/becoming-a-monk/consider/" target="_blank" class="text-decoration-none">
+                <div class="card border-0">
+                    <img src="{% static 'MEPKING/Things to consider.webp' %}" class="card-img rounded-3" alt="Things to Consider When Becoming a Monk at Mepkin Abbey" style="height: 15rem; object-fit: cover;">
+                    <div class="card-img-overlay">
+                        <h6 class="card-text fw-bold position-absolute bottom-0 mb-2 p-2" style="color: #fff; background-color: rgba(0, 0, 0, 0.6)">
+                            Things to Consider
+                        </h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col">
+            <a href="https://mepkinabbey.org/monastic-institute-reflection-by-john-palen/?fbclid=IwAR2hDnPeCVrpuwmV0I6lSEKQ24S0QBc0h9CP-3O0Dq3jP4isVeeJYcd9jic" target="_blank" class="text-decoration-none">
+                <div class="card border-0">
+                    <img src="{% static 'MEPKING/Be a monk for a month or a year.jpeg' %}" class="card-img rounded-3" alt="Be a Monk for a Month or a Year at Mepkin Abbey" style="height: 15rem; object-fit: cover;">
+                    <div class="card-img-overlay">
+                        <h6 class="card-text fw-bold position-absolute bottom-0 mb-2 p-2" style="color: #fff; background-color: rgba(0, 0, 0, 0.6)">
+                            Be a Monk for a Month or a Year
+                        </h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<br>
+{% include 'navbar.html' %}
+{% endblock %}

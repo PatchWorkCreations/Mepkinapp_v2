@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page.title }} — Mepkin Abbey{% endblock %}
+{% block description %}{{ page.blurb }}{% endblock %}
+
+{% block content %}
+  <div class="topbar">
+    <a href="{{ page.back_url|default:'/home/' }}" class="back" aria-label="Back">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <div class="title">{{ page.title }}</div>
+    <img class="brand-dot" src="https://www.mepkinapp.org/static/MEPKING/logo.png" alt="Mepkin Abbey">
+  </div>
+
+  <div class="hero">
+    <div class="hero-bg" style="background-image: url('{{ page.image }}');"></div>
+    <div class="hero-scrim"></div>
+    <div class="hero-caption">
+      <div class="hero-eyebrow">{{ page.eyebrow|default:'Mepkin Abbey' }}</div>
+      <div class="hero-title">{{ page.title }}</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    {% if page.audio %}
+    <div style="margin: 4px 0 18px;">
+      <div class="pill" style="margin-bottom: 10px;"><i class="fa-solid fa-headphones"></i>&nbsp; Tour audio</div>
+      <audio controls style="width: 100%;">
+        <source src="{{ page.audio }}" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+    {% endif %}
+
+    <div class="prose">
+      {% for para in page.body %}
+      <p>{{ para }}</p>
+      {% endfor %}
+    </div>
+
+    {% if page.back_url %}
+    <a href="{{ page.back_url }}" class="btn-gold btn-block" style="margin-top: 22px;">
+      <i class="fa-solid fa-arrow-left"></i> Back
+    </a>
+    {% endif %}
+
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Record this page as "visited" for the storybook tour map (tour sites only).
+  (function () {
+    {% if page.back_url == '/virtual-tour/' %}
+    try {
+      var KEY = "mepkin_visited";
+      var slug = "{{ page.slug|escapejs }}";
+      var seen = JSON.parse(localStorage.getItem(KEY)) || [];
+      if (slug && seen.indexOf(slug) === -1) {
+        seen.push(slug);
+        localStorage.setItem(KEY, JSON.stringify(seen));
+      }
+    } catch (e) {}
+    {% endif %}
+  })();
+</script>
+{% endblock %}

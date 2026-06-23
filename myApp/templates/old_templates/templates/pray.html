@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+    body {
+        background-image: url('{% static 'MEPKING/Prayer Request.jpg' %}');
+        background-size: cover;
+    }
+
+    .overlay {
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .form-control, .form-select {
+        background-color: rgba(255, 255, 255, 0.9); /* Adjusted opacity */
+    }
+
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Full viewport height */
+    }
+
+    .form-content {
+        width: 100%;
+        max-width: 500px; /* Maximum width for the form */
+    }
+</style>
+
+<div class="bg-secondary text-white sticky-top">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center py-2">
+            <h1>
+                <span class="me-4">
+                    <a href="{% url 'home' %}" class="text-decoration-none text-white">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                </span>
+                Submit a Prayer Request
+            </h1>
+            <img src="{% static 'MEPKING/logo.png' %}" height="75rem" alt="Mepkin Abbey Logo">
+        </div>
+    </div>
+</div>
+
+<div class="container form-container">
+    <div class="form-content overlay text-white">
+        <p>At Mepkin Abbey, we believe in the power of prayer. Share your petitions and gratitude with us, and let us join you in your spiritual journey. Submit your prayer requests below and know that we are here to support you.</p>
+
+        {% if message %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div>{{ message|safe }}</div>
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Name/Pseudonym:</label>
+                <input type="text" class="form-control" name="name" placeholder="Enter name..." required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Petition or Gratitude:</label>
+                <select class="form-select" name="type" required>
+                    <option value="">---</option>
+                    <option value="Prayer Request">Petition</option>
+                    <option value="Gratitude Prayer">Gratitude</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Prayer Message:</label>
+                <textarea class="form-control" name="prayer_msg" id="prayer_msg" rows="3" placeholder="Type your prayer here..." required></textarea>
+                <p class="text-end mt-1" id="wordCount" style="font-size: 12px;">200 words remaining</p>
+            </div>
+            <div class="d-grid gap-2">
+                <button class="btn btn-secondary" type="submit" name="pray">Submit</button>
+                <a href="#" class="text-center text-decoration-none" data-bs-toggle="modal" data-bs-target="#loginModal">Login as Administrator</a>
+            </div> 
+        </form>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Admin Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Username:</label>
+                        <input type="text" class="form-control" name="username" placeholder="Enter username..." required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password:</label>
+                        <input type="password" class="form-control" name="password" placeholder="Enter password..." required>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-secondary" type="submit" name="admin_login">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var textarea = document.getElementById('prayer_msg');
+    var wordCountDisplay = document.getElementById('wordCount');
+
+    textarea.addEventListener('input', function () {
+        var words = textarea.value.split(/\s+/).filter(function (word) {
+            return word.length > 0;
+        });
+        var wordCount = words.length;
+
+        if (wordCount > 200) {
+            var truncatedWords = words.slice(0, 200);
+            textarea.value = truncatedWords.join(' ');
+            wordCount = 200;
+        }
+
+        var remainingWords = 200 - wordCount;
+        wordCountDisplay.textContent = remainingWords + (remainingWords === 1 ? ' word' : ' words') + ' remaining';
+    });
+</script>
+
+{% include 'navbar.html' %}
+{% endblock %}

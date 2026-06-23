@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mepkin Abbey</title>
+  <meta name="description" content="Explore the rich history and spiritual sites of Mepkin Abbey. Discover Luce Gardens, Memorial Bricks, Columbarium, and more.">
+  <meta name="keywords" content="Mepkin Abbey, virtual tour, Luce Gardens, Memorial Bricks, Columbarium, Charleston">
+  <meta name="author" content="Mepkin Abbey">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <link rel="manifest" href="/static/manifest.json">
+  <link rel="shortcut icon" type="image/png" href="https://www.mepkinapp.org/static/MEPKING/logo.png">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous" defer></script>
+
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/18ee09c425.js" crossorigin="anonymous" defer></script>
+
+  <!-- Google Maps (kept for compatibility) -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMRY9i91HSgEAJZUr3Vxx3HrztXRJQueM&callback=initMap" defer></script>
+
+  <!-- Lightbox -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js" defer></script>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Mepkin Abbey",
+    "url": "https://www.mepkinabbey.org",
+    "logo": "/static/MEPKING/logo.png",
+    "sameAs": [
+      "https://www.facebook.com/mepkinabbey",
+      "https://twitter.com/mepkinabbey"
+    ]
+  }
+  </script>
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #0F1E1A;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    body::-webkit-scrollbar { display: none; }
+
+    /* ── App shell ── */
+    .app {
+      width: 100%;
+      max-width: 430px;
+      min-height: 100vh;
+      background: #1A2E28;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      height: 55vh;
+      min-height: 240px;
+      max-height: 380px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://www.mepkinapp.org/static/MEPKING/oak-allee4.jpeg');
+      background-size: cover;
+      background-position: center 30%;
+      opacity: 0.55;
+    }
+
+    .hero-scrim {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 65%;
+      background: linear-gradient(to top, #1A2E28 0%, transparent 100%);
+    }
+
+    .hero-wordmark {
+      position: absolute;
+      top: env(safe-area-inset-top, 18px);
+      top: calc(env(safe-area-inset-top, 0px) + 18px);
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* ── Content ── */
+    .content {
+      flex: 1;
+      padding: 0 22px 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Logo ── */
+    .logo-wrap {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: rgba(172, 147, 98, 0.12);
+      border: 1.5px solid rgba(172, 147, 98, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: -30px auto 20px;
+      position: relative;
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    .logo-wrap img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      filter: brightness(1.15);
+    }
+
+    /* ── Headlines ── */
+    .headline {
+      font-size: 26px;
+      font-weight: 700;
+      color: #F5F0E8;
+      line-height: 1.25;
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .subtext {
+      font-size: 14px;
+      color: rgba(245, 240, 232, 0.5);
+      line-height: 1.7;
+      font-style: italic;
+      margin-bottom: 28px;
+      max-width: 300px;
+    }
+
+    /* ── Section divider ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(172, 147, 98, 0.25);
+    }
+
+    .divider span {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(172, 147, 98, 0.6);
+      white-space: nowrap;
+    }
+
+    /* ── Choice cards ── */
+    .choice-cards {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .choice-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(172, 147, 98, 0.22);
+      border-radius: 16px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      transition: background 0.15s ease, border-color 0.15s ease;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .choice-card:hover,
+    .choice-card:focus {
+      background: rgba(172, 147, 98, 0.1);
+      border-color: rgba(172, 147, 98, 0.45);
+      text-decoration: none;
+      outline: none;
+    }
+
+    .choice-card:active {
+      transform: scale(0.98);
+    }
+
+    .choice-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 13px;
+      background: rgba(172, 147, 98, 0.15);
+      border: 1px solid rgba(172, 147, 98, 0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #AC9362;
+      font-size: 20px;
+    }
+
+    .choice-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .choice-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #F5F0E8;
+      margin-bottom: 3px;
+    }
+
+    .choice-sub {
+      font-size: 12px;
+      color: rgba(245, 240, 232, 0.45);
+      line-height: 1.45;
+    }
+
+    .choice-arrow {
+      color: rgba(172, 147, 98, 0.5);
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* ── CTA button ── */
+    .calling-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 15px 18px;
+      border-radius: 14px;
+      background: #AC9362;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s ease, transform 0.1s ease;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      letter-spacing: 0.01em;
+    }
+
+    .calling-btn:hover,
+    .calling-btn:focus {
+      background: #9A824F;
+      color: #fff;
+      text-decoration: none;
+      outline: none;
+    }
+
+    .calling-btn:active {
+      transform: scale(0.98);
+      background: #8A7244;
+    }
+
+    .calling-btn .btn-icon {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    /* ── Responsive: wider screens still look like a phone ── */
+    @media (min-width: 431px) {
+      body {
+        align-items: center;
+        padding: 2rem 0;
+      }
+
+      .app {
+        min-height: auto;
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+      }
+
+      .hero {
+        height: 320px;
+        max-height: 320px;
+      }
+    }
+
+    @media (max-height: 700px) {
+      .hero {
+        height: 42vh;
+        min-height: 180px;
+      }
+
+      .headline { font-size: 22px; }
+      .subtext { margin-bottom: 20px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── Hero image ── -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-scrim"></div>
+    <div class="hero-wordmark">Mepkin Abbey</div>
+  </div>
+
+  <!-- ── Main content ── -->
+  <div class="content">
+
+    <!-- Logo -->
+    <div class="logo-wrap">
+      <img
+        src="https://www.mepkinapp.org/static/MEPKING/logo.png"
+        alt="Mepkin Abbey logo"
+        onerror="this.parentElement.innerHTML='<span style=\'font-size:26px; color:#AC9362;\'>✦</span>'"
+      >
+    </div>
+
+    <h1 class="headline">Welcome, seeker</h1>
+    <p class="subtext">We share our contemplative life — sacred and serene — with all who come.</p>
+
+    <div class="divider"><span>How can we help you today?</span></div>
+
+    <!-- Choice cards -->
+    <div class="choice-cards">
+
+      <a href="/virtual-tour/" class="choice-card">
+        <div class="choice-icon">
+          <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+        </div>
+        <div class="choice-text">
+          <div class="choice-title">I'm visiting the abbey</div>
+          <div class="choice-sub">Join our self-guided tour of the grounds</div>
+        </div>
+        <div class="choice-arrow">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </div>
+      </a>
+
+      <a href="/home/" class="choice-card">
+        <div class="choice-icon">
+          <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        </div>
+        <div class="choice-text">
+          <div class="choice-title">I'm exploring from afar</div>
+          <div class="choice-sub">Learn about Mepkin Abbey and our community</div>
+        </div>
+        <div class="choice-arrow">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Contemplative calling CTA -->
+    <a href="/calling" class="calling-btn">
+      <i class="fa-solid fa-fire btn-icon" aria-hidden="true"></i>
+      Is the contemplative life calling you?
+    </a>
+
+  </div><!-- /content -->
+
+</div><!-- /app -->
+
+</body>
+</html>

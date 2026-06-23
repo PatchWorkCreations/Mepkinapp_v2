@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}About Mepkin Abbey{% endblock %}
+{% block description %}Learn about Mepkin Abbey — our history, our monastic community, and our contemplative life.{% endblock %}
+
+{% block content %}
+  <div class="hero">
+    <div class="hero-bg" style="background-image: url('https://www.mepkinapp.org/static/MEPKING/oak-allee4.jpeg');"></div>
+    <div class="hero-scrim"></div>
+    <div class="hero-caption">
+      <div class="hero-eyebrow">Welcome to</div>
+      <div class="hero-title">About Mepkin</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <p class="prose" style="text-align: center; margin: -2px 4px 22px; font-style: italic;">
+      A community of Trappist monks on the banks of the Cooper River, sharing a life of prayer, work, and sacred silence.
+    </p>
+
+    <div class="section-head"><span>Discover Mepkin</span></div>
+
+    <div class="card-list">
+      {% for item in articles %}
+      <a href="/p/{{ item.slug }}/" class="nav-card">
+        <div class="ic"><i class="{{ item.icon }}"></i></div>
+        <div class="tx">
+          <div class="t">{{ item.title }}</div>
+          <div class="s">{{ item.blurb }}</div>
+        </div>
+        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

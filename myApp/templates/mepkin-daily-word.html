@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mepkin Daily Word</title>
+  <meta name="description" content="Contemplative insight from Mepkin Abbey, drawn from our daily liturgical readings and homily.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <link rel="shortcut icon" type="image/png" href="/static/MEPKING/logo.png">
+  <link rel="manifest" href="/static/manifest.json">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous" defer></script>
+
+  <!-- Google Maps -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMRY9i91HSgEAJZUr3Vxx3HrztXRJQueM&callback=initMap" defer></script>
+
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/18ee09c425.js" crossorigin="anonymous" defer></script>
+
+  <!-- Lightbox -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js" defer></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #F5F0E8;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    body::-webkit-scrollbar { display: none; }
+
+    /* ── App shell ── */
+    .app {
+      width: 100%;
+      max-width: 430px;
+      background: #F5F0E8;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      height: 200px;
+      background: #2C4A3E;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('/static/MEPKING/9.jpeg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.35;
+    }
+
+    .hero-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(44,74,62,0.3) 0%, rgba(44,74,62,0.85) 100%);
+    }
+
+    .hero-label {
+      position: absolute;
+      top: 18px;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .hero-title {
+      position: absolute;
+      bottom: 48px;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+
+    .avatar-anchor {
+      position: absolute;
+      bottom: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+    }
+
+    .avatar-ring {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 3px solid #F5F0E8;
+      overflow: hidden;
+      background: #AC9362;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .avatar-ring img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .avatar-fallback {
+      font-size: 22px;
+      color: #fff;
+    }
+
+    /* ── Subtitle block ── */
+    .subtitle-block {
+      padding: 44px 24px 0;
+      text-align: center;
+    }
+
+    .subtitle-block p {
+      font-size: 13px;
+      color: #6B6256;
+      line-height: 1.65;
+      font-style: italic;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    /* ── Section divider ── */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 20px 14px;
+    }
+
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #AC9362;
+      opacity: 0.35;
+    }
+
+    .section-divider span {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #AC9362;
+      white-space: nowrap;
+    }
+
+    /* ── Feed ── */
+    .feed {
+      padding: 0 14px 110px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ── Card ── */
+    .word-card {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid rgba(172,147,98,0.18);
+      padding: 14px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      transition: box-shadow 0.15s ease;
+    }
+
+    .word-card:active {
+      box-shadow: 0 0 0 2px rgba(172,147,98,0.3);
+    }
+
+    .word-card.featured {
+      border: 1.5px solid #AC9362;
+      background: #FFFDF8;
+    }
+
+    .card-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #AC9362;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .card-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card-avatar-icon {
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .card-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+
+    .card-author {
+      font-size: 11px;
+      font-weight: 600;
+      color: #6B6256;
+      letter-spacing: 0.02em;
+    }
+
+    .card-date {
+      font-size: 11px;
+      color: #AC9362;
+      background: rgba(172,147,98,0.1);
+      padding: 2px 8px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-weight: 500;
+    }
+
+    .badge-latest {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: #AC9362;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-bottom: 7px;
+    }
+
+    .card-poem {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #2C2C2A;
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    .word-card.featured .card-poem {
+      font-size: 15px;
+    }
+
+    /* ── Pagination ── */
+    .pagination-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 16px 0 6px;
+      flex-wrap: wrap;
+    }
+
+    .pg-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid rgba(172,147,98,0.25);
+      background: #fff;
+      color: #6B6256;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    .pg-btn.active {
+      background: #AC9362;
+      color: #fff;
+      border-color: #AC9362;
+      font-weight: 600;
+    }
+
+    .pg-btn:hover:not(.active) {
+      background: rgba(172,147,98,0.08);
+      border-color: #AC9362;
+      color: #AC9362;
+    }
+
+    .pg-dots {
+      font-size: 13px;
+      color: #AC9362;
+      padding: 0 2px;
+      opacity: 0.6;
+    }
+
+    /* ── Bottom bar ── */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(172,147,98,0.2);
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+      display: flex;
+      gap: 10px;
+      z-index: 200;
+    }
+
+    .btn-ghost {
+      flex: 1;
+      padding: 12px 10px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid rgba(172,147,98,0.3);
+      background: rgba(172,147,98,0.07);
+      color: #6B5A3E;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      text-decoration: none;
+      transition: all 0.15s;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    .btn-ghost:hover, .btn-ghost:focus {
+      background: rgba(172,147,98,0.14);
+      color: #5A4A2E;
+      text-decoration: none;
+    }
+
+    .btn-ghost:active { opacity: 0.75; transform: scale(0.98); }
+
+    .btn-primary-gold {
+      flex: 1;
+      padding: 12px 10px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      background: #AC9362;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      text-decoration: none;
+      transition: all 0.15s;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    .btn-primary-gold:hover, .btn-primary-gold:focus {
+      background: #9A824F;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .btn-primary-gold:active { opacity: 0.85; transform: scale(0.98); }
+
+    /* ── Login Modal ── */
+    .modal-content {
+      border-radius: 20px;
+      border: none;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+
+    .modal-header {
+      border-bottom: 1px solid rgba(172,147,98,0.2);
+      padding: 20px 24px 16px;
+    }
+
+    .modal-title { font-size: 16px; font-weight: 600; color: #2C2C2A; }
+    .modal-body { padding: 20px 24px 24px; }
+
+    .form-floating label { font-size: 13px; }
+    .form-control:focus {
+      border-color: #AC9362;
+      box-shadow: 0 0 0 3px rgba(172,147,98,0.15);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      background: #AC9362;
+      color: #fff;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-top: 8px;
+    }
+
+    .btn-login:hover { background: #9A824F; }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── Hero ── -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-gradient"></div>
+    <div class="hero-label">Mepkin Abbey</div>
+    <div class="hero-title">Daily Word</div>
+    <div class="avatar-anchor">
+      <div class="avatar-ring">
+        <img src="/static/MEPKING/Homilies.jpg" alt="Mepkin Abbey"
+             onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'avatar-fallback\'>✦</span>'">
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Subtitle ── -->
+  <div class="subtitle-block">
+    <p>Contemplative insight from Mepkin Abbey, drawn from our daily liturgical readings and homily. Help us to pray — one thought per day.</p>
+  </div>
+
+  <!-- ── Section divider ── -->
+  <div class="section-divider"><span>Daily Word</span></div>
+
+  <!-- ── Feed ── -->
+  <div class="feed">
+
+    <!-- Featured card -->
+    <div class="word-card featured">
+      <div class="card-avatar">
+        <img src="/static/MEPKING/Homilies.jpg" alt=""
+             onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'card-avatar-icon\'>✦</span>'">
+      </div>
+      <div class="card-body">
+        <span class="badge-latest">Latest</span>
+        <div class="card-top">
+          <span class="card-author">Mepkin Daily Word</span>
+          <span class="card-date">May 6</span>
+        </div>
+        <div class="card-poem">
+          Pruning is helpful<br>
+          May seem hurtful, but behold<br>
+          Cut back, more fruitful!
+        </div>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="word-card">
+      <div class="card-avatar">
+        <img src="/static/MEPKING/Homilies.jpg" alt=""
+             onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'card-avatar-icon\'>✦</span>'">
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="card-author">Mepkin Daily Word</span>
+          <span class="card-date">May 5</span>
+        </div>
+        <div class="card-poem">
+          Opening the doors<br>
+          God welcomes us, everyone<br>
+          Shut out not others!
+        </div>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="word-card">
+      <div class="card-avatar">
+        <img src="/static/MEPKING/Homilies.jpg" alt=""
+             onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'card-avatar-icon\'>✦</span>'">
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="card-author">Mepkin Daily Word</span>
+          <span class="card-date">May 4</span>
+        </div>
+        <div class="card-poem">
+          The Advocate comes<br>
+          True Life in the Living God<br>
+          Listen, Pray, and Act
+        </div>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="word-card">
+      <div class="card-avatar">
+        <img src="/static/MEPKING/Homilies.jpg" alt=""
+             onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'card-avatar-icon\'>✦</span>'">
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="card-author">Mepkin Daily Word</span>
+          <span class="card-date">May 3</span>
+        </div>
+        <div class="card-poem">
+          Jesus: Way, Truth, Life<br>
+          Our life of Faith, Hope, and Love<br>
+          Priest, Prophet, and King
+        </div>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="word-card">
+      <div class="card-avatar">
+        <img src="/static/MEPKING/Homilies.jpg" alt=""
+             onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'card-avatar-icon\'>✦</span>'">
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="card-author">Mepkin Daily Word</span>
+          <span class="card-date">May 1</span>
+        </div>
+        <div class="card-poem">
+          The Carpenter's Son<br>
+          Formed in humble service by<br>
+          Carpenter Joseph
+        </div>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="word-card">
+      <div class="card-avatar">
+        <img src="/static/MEPKING/Homilies.jpg" alt=""
+             onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'card-avatar-icon\'>✦</span>'">
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="card-author">Mepkin Daily Word</span>
+          <span class="card-date">Apr 30</span>
+        </div>
+        <div class="card-poem">
+          Object to Subject<br>
+          Receive the Good News of Christ<br>
+          Then be Proclaimers
+        </div>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="word-card">
+      <div class="card-avatar">
+        <img src="/static/MEPKING/Homilies.jpg" alt=""
+             onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'card-avatar-icon\'>✦</span>'">
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="card-author">Mepkin Daily Word</span>
+          <span class="card-date">Apr 28</span>
+        </div>
+        <div class="card-poem">
+          Remind flock members<br>
+          "Believe the One I have sent."<br>
+          Many then followed.
+        </div>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="word-card">
+      <div class="card-avatar">
+        <img src="/static/MEPKING/Homilies.jpg" alt=""
+             onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'card-avatar-icon\'>✦</span>'">
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="card-author">Mepkin Daily Word</span>
+          <span class="card-date">Apr 26</span>
+        </div>
+        <div class="card-poem">
+          Sheep are so helpless<br>
+          So needful of a shepherd<br>
+          Good to care and guide
+        </div>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="word-card">
+      <div class="card-avatar">
+        <img src="/static/MEPKING/Homilies.jpg" alt=""
+             onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'card-avatar-icon\'>✦</span>'">
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="card-author">Mepkin Daily Word</span>
+          <span class="card-date">Apr 25</span>
+        </div>
+        <div class="card-poem">
+          Feast of St Mark<br>
+          Uniquely equipped<br>
+          Accompany each other<br>
+          In humility
+        </div>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="word-card">
+      <div class="card-avatar">
+        <img src="/static/MEPKING/Homilies.jpg" alt=""
+             onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'card-avatar-icon\'>✦</span>'">
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="card-author">Mepkin Daily Word</span>
+          <span class="card-date">Apr 20</span>
+        </div>
+        <div class="card-poem">
+          There was bread for all<br>
+          Not only for the body<br>
+          Nourishes the soul
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Pagination ── -->
+    <div class="pagination-row">
+      <a class="pg-btn active" href="?page=1">1</a>
+      <a class="pg-btn" href="?page=2">2</a>
+      <a class="pg-btn" href="?page=3">3</a>
+      <a class="pg-btn" href="?page=4">4</a>
+      <a class="pg-btn" href="?page=5">5</a>
+      <span class="pg-dots">…</span>
+      <a class="pg-btn" href="?page=48">48</a>
+      <a class="pg-btn" href="?page=2" style="padding: 0 12px; width: auto;">Next →</a>
+    </div>
+
+  </div><!-- /feed -->
+
+</div><!-- /app -->
+
+
+<!-- ── Admin Login Modal ── -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Administrator Login</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post">
+          <input type="hidden" name="csrfmiddlewaretoken" value="QxGAvwLIGpAbEjbpzfRMbb9MSNcBEPfgCxDwmYlCXq7KECB0Ax5GIaAWFK7HrKIm">
+          <div class="form-floating mb-3">
+            <input type="text" name="username" class="form-control" id="floatingInput" placeholder="Username">
+            <label for="floatingInput">Username</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
+            <label for="floatingPassword">Password</label>
+          </div>
+          <button class="btn-login" type="submit">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ── Bottom action bar ── -->
+<div class="bottom-bar">
+  <a href="/pray/" class="btn-ghost">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    Submit a prayer
+  </a>
+  <a href="/psalter/" class="btn-primary-gold">
+    Psalter
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+  </a>
+</div>
+
+
+<!-- ── Structured Data ── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Mepkin Abbey",
+  "url": "https://www.mepkinabbey.org",
+  "logo": "/static/MEPKING/logo.png",
+  "sameAs": [
+    "https://www.facebook.com/mepkinabbey",
+    "https://twitter.com/mepkinabbey"
+  ]
+}
+</script>
+
+</body>
+</html>

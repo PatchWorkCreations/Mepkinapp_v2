@@ -1,0 +1,411 @@
+{% extends 'base.html' %}
+
+{% block title %}Virtual Tour — Mepkin Abbey{% endblock %}
+{% block description %}A storybook adventure map of the Mepkin Abbey grounds — tap each site to explore.{% endblock %}
+
+{% block extra_head %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Cinzel:wght@600&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block extra_css %}
+  /* ── Storybook header ── */
+  .quest-head {
+    text-align: center;
+    padding: 22px 18px 6px;
+  }
+  .quest-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .quest-title {
+    font-family: 'Caveat', cursive;
+    font-size: 38px;
+    line-height: 1.05;
+    color: var(--cream);
+    margin: 2px 0 10px;
+  }
+  .progress-strip {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(172,147,98,0.12);
+    border: 1px solid var(--gold-dim);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: var(--cream);
+  }
+  .progress-strip b { color: var(--gold); }
+  .progress-strip .reset {
+    color: var(--muted-2);
+    text-decoration: none;
+    border-left: 1px solid var(--gold-dim);
+    padding-left: 10px;
+    cursor: pointer;
+  }
+  .progress-strip .reset:hover { color: var(--gold); }
+
+  /* ── Map canvas (parchment frame) ── */
+  .map-wrap {
+    position: relative;
+    margin: 14px 14px 0;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 3px solid #6b5836;
+    box-shadow: 0 0 0 2px rgba(172,147,98,0.25), inset 0 0 60px rgba(0,0,0,0.45);
+    background: #2a2117;
+    line-height: 0;
+  }
+  .map-wrap img.map-base {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: sepia(0.35) saturate(1.05) contrast(0.96) brightness(0.92);
+  }
+  /* warm parchment vignette over the photo */
+  .map-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(120% 90% at 50% 40%, rgba(0,0,0,0) 55%, rgba(40,30,15,0.55) 100%),
+      linear-gradient(rgba(120,90,40,0.10), rgba(60,45,20,0.18));
+  }
+
+  .trail-svg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
+  .trail-path {
+    fill: none;
+    stroke: #f3e4c0;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-dasharray: 0.1 9;
+    opacity: 0.85;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));
+  }
+
+  /* ── Pins ── */
+  .pin {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a3a18;
+    background:
+      radial-gradient(circle at 32% 28%, #fff6db 0%, #f0d488 40%, #c9a24c 100%);
+    box-shadow:
+      0 3px 6px rgba(0,0,0,0.45),
+      inset 0 -2px 3px rgba(120,85,20,0.5),
+      inset 0 2px 3px rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.12s ease;
+  }
+  .pin:hover { transform: translate(-50%, -50%) scale(1.12); }
+  .pin:active { transform: translate(-50%, -50%) scale(0.95); }
+
+  .pin.visited {
+    background: radial-gradient(circle at 32% 28%, #cfeccb 0%, #8fc888 45%, #4f9d56 100%);
+    color: #1c3a1e;
+  }
+  .pin.visited .num { display: none; }
+  .pin.visited::before {
+    content: '\2713';
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  /* pulsing "start here" ring on the next unvisited pin */
+  .pin.next::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid #f3e4c0;
+    animation: pinpulse 1.6s ease-out infinite;
+  }
+  @keyframes pinpulse {
+    0%   { transform: scale(0.75); opacity: 0.9; }
+    100% { transform: scale(1.7); opacity: 0; }
+  }
+
+  /* ── Popover ── */
+  .pop-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8,16,13,0.55);
+    backdrop-filter: blur(2px);
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .pop-overlay.open { display: flex; }
+  .pop-card {
+    width: 100%;
+    max-width: 320px;
+    background: var(--bg-shell);
+    border: 1px solid var(--gold-dim);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    transform: translateY(8px);
+    animation: popin 0.18s ease forwards;
+  }
+  @keyframes popin { to { transform: translateY(0); } }
+  .pop-thumb {
+    height: 140px;
+    background-size: cover;
+    background-position: center;
+    background-color: #2a2117;
+  }
+  .pop-body { padding: 16px 18px 18px; }
+  .pop-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .pop-name { font-size: 19px; font-weight: 700; color: var(--cream); margin: 3px 0 8px; }
+  .pop-blurb { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
+  .stars { color: var(--gold-dim); font-size: 15px; letter-spacing: 3px; margin-bottom: 14px; }
+  .stars .on { color: #f0d488; }
+  .pop-actions { display: flex; gap: 10px; }
+  .pop-actions .ghost {
+    flex: 0 0 auto;
+    padding: 13px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  /* ── Legend ── */
+  .legend { padding: 22px 14px 0; }
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 12px;
+    border-radius: 13px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    text-decoration: none;
+    margin-bottom: 8px;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .legend-row:hover { background: rgba(172,147,98,0.1); border-color: var(--gold-dim); }
+  .legend-num {
+    width: 28px; height: 28px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 28%, #fff6db, #f0d488 45%, #c9a24c);
+    color: #4a3a18;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .legend-row.is-visited .legend-num {
+    background: radial-gradient(circle at 32% 28%, #cfeccb, #8fc888 45%, #4f9d56);
+    color: #1c3a1e;
+  }
+  .legend-name { flex: 1; min-width: 0; font-size: 14px; font-weight: 600; color: var(--cream); }
+  .legend-stars { color: var(--gold-dim); font-size: 12px; letter-spacing: 2px; flex-shrink: 0; }
+  .legend-stars .on { color: #f0d488; }
+{% endblock %}
+
+{% block content %}
+  <div class="quest-head">
+    <div class="quest-eyebrow">Self-guided</div>
+    <div class="quest-title">A Journey Through Mepkin</div>
+    <div class="progress-strip">
+      <span><b id="visited-count">0</b> of {{ sites|length }} sites explored</span>
+      <span class="reset" id="reset-progress">Reset</span>
+    </div>
+  </div>
+
+  <!-- ── Map canvas ── -->
+  <div class="map-wrap" id="map-wrap">
+    <img class="map-base" id="map-base" src="{{ map_image }}" alt="Map of the Mepkin Abbey grounds">
+    <svg class="trail-svg" id="trail-svg" preserveAspectRatio="none">
+      <path class="trail-path" id="trail-path" d=""></path>
+    </svg>
+    <!-- pins injected by JS -->
+  </div>
+
+  <!-- ── Legend / accessible list ── -->
+  <div class="legend">
+    <div class="section-head"><span>All {{ sites|length }} sites</span></div>
+    {% for site in sites %}
+    <a class="legend-row" data-slug="{{ site.slug }}" href="/p/{{ site.slug }}/">
+      <span class="legend-num">{{ site.order }}</span>
+      <span class="legend-name">{{ site.title }}</span>
+      <span class="legend-stars" data-stars></span>
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- ── Popover ── -->
+  <div class="pop-overlay" id="pop-overlay">
+    <div class="pop-card" id="pop-card">
+      <div class="pop-thumb" id="pop-thumb"></div>
+      <div class="pop-body">
+        <div class="pop-eyebrow">Virtual Tour</div>
+        <div class="pop-name" id="pop-name"></div>
+        <div class="stars" id="pop-stars"></div>
+        <div class="pop-blurb" id="pop-blurb"></div>
+        <div class="pop-actions">
+          <button class="ghost" id="pop-close" type="button">Close</button>
+          <a class="btn-gold" id="pop-begin" href="#" style="flex:1;">Begin <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Site data from Django.
+  const SITES = [
+    {% for site in sites %}
+    {
+      slug: "{{ site.slug }}",
+      title: "{{ site.title|escapejs }}",
+      blurb: "{{ site.blurb|escapejs }}",
+      image: "{{ site.image }}",
+      order: {{ site.order }},
+      top: {{ site.top }},
+      left: {{ site.left }}
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ];
+
+  const FALLBACK_IMG = "https://www.mepkinapp.org/static/MEPKING/oak-allee4.jpeg";
+  const KEY = "mepkin_visited";
+  const getVisited = () => { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { return []; } };
+
+  const wrap = document.getElementById("map-wrap");
+  const base = document.getElementById("map-base");
+  const svg = document.getElementById("trail-svg");
+  const path = document.getElementById("trail-path");
+
+  const starStr = (visited) => {
+    const n = visited ? 3 : 0;
+    let s = "";
+    for (let i = 0; i < 3; i++) s += i < n ? '<span class="on">★</span>' : '☆';
+    return s;
+  };
+
+  // Build pins once.
+  function buildPins() {
+    document.querySelectorAll(".pin").forEach(p => p.remove());
+    SITES.forEach(site => {
+      const pin = document.createElement("button");
+      pin.className = "pin";
+      pin.type = "button";
+      pin.style.top = site.top + "%";
+      pin.style.left = site.left + "%";
+      pin.dataset.slug = site.slug;
+      pin.innerHTML = '<span class="num">' + site.order + '</span>';
+      pin.addEventListener("click", () => openPopover(site));
+      wrap.appendChild(pin);
+    });
+  }
+
+  // Draw the dashed trail through pins in order, in the SVG's pixel space.
+  function drawTrail() {
+    const w = wrap.clientWidth, h = wrap.clientHeight;
+    if (!w || !h) return;
+    svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    const pts = [...SITES].sort((a, b) => a.order - b.order)
+      .map(s => [s.left / 100 * w, s.top / 100 * h]);
+    if (pts.length < 2) return;
+    // Smooth-ish path using quadratic midpoints.
+    let d = `M ${pts[0][0]} ${pts[0][1]}`;
+    for (let i = 1; i < pts.length; i++) {
+      const [x, y] = pts[i], [px, py] = pts[i - 1];
+      const mx = (px + x) / 2, my = (py + y) / 2;
+      d += ` Q ${px} ${py} ${mx} ${my}`;
+    }
+    d += ` T ${pts[pts.length - 1][0]} ${pts[pts.length - 1][1]}`;
+    path.setAttribute("d", d);
+    // scale dash to image size so dots stay even
+    path.style.strokeDasharray = "0.1 " + Math.max(7, w * 0.022);
+    path.style.strokeWidth = Math.max(2, w * 0.006);
+  }
+
+  // Apply visited state to pins, legend, progress, and "next" pulse.
+  function render() {
+    const visited = getVisited();
+    document.getElementById("visited-count").textContent =
+      SITES.filter(s => visited.includes(s.slug)).length;
+
+    const ordered = [...SITES].sort((a, b) => a.order - b.order);
+    const nextSlug = (ordered.find(s => !visited.includes(s.slug)) || {}).slug;
+
+    document.querySelectorAll(".pin").forEach(pin => {
+      const slug = pin.dataset.slug;
+      pin.classList.toggle("visited", visited.includes(slug));
+      pin.classList.toggle("next", slug === nextSlug);
+    });
+    document.querySelectorAll(".legend-row").forEach(row => {
+      const isV = visited.includes(row.dataset.slug);
+      row.classList.toggle("is-visited", isV);
+      row.querySelector("[data-stars]").innerHTML = starStr(isV);
+    });
+  }
+
+  // ── Popover ──
+  const overlay = document.getElementById("pop-overlay");
+  function openPopover(site) {
+    const visited = getVisited().includes(site.slug);
+    const thumb = document.getElementById("pop-thumb");
+    thumb.style.backgroundImage = `url('${site.image}')`;
+    // fallback if thumbnail 404s
+    const probe = new Image();
+    probe.onerror = () => { thumb.style.backgroundImage = `url('${FALLBACK_IMG}')`; };
+    probe.src = site.image;
+
+    document.getElementById("pop-name").textContent = site.title;
+    document.getElementById("pop-blurb").textContent = site.blurb;
+    document.getElementById("pop-stars").innerHTML = starStr(visited);
+    document.getElementById("pop-begin").href = "/p/" + site.slug + "/";
+    overlay.classList.add("open");
+  }
+  function closePopover() { overlay.classList.remove("open"); }
+  document.getElementById("pop-close").addEventListener("click", closePopover);
+  overlay.addEventListener("click", e => { if (e.target === overlay) closePopover(); });
+
+  // Reset
+  document.getElementById("reset-progress").addEventListener("click", () => {
+    localStorage.removeItem(KEY);
+    render();
+  });
+
+  // Init
+  buildPins();
+  render();
+  if (base.complete) drawTrail();
+  base.addEventListener("load", drawTrail);
+  window.addEventListener("resize", drawTrail);
+</script>
+{% endblock %}

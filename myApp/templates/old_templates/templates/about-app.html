@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="bg-secondary text-white sticky-top">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center py-2">
+            <h1>
+                <span class="me-4">
+                    <a href="{% url 'connect' %}" class="text-decoration-none text-white">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                </span>
+                About App
+            </h1>
+            <img src="{% static 'MEPKING/logo.png' %}" height="75rem" alt="Mepkin Abbey Logo">
+        </div>
+    </div>
+</div>
+
+<div class="container mt-3">
+    <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold">Current User Count</h5>
+            <span class="badge bg-primary rounded-pill" id="activeUserCount"></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center mt-1">
+            <h5 class="fw-bold">Overall Views</h5>
+            <span class="badge bg-primary rounded-pill">{{ unique_visitors_count }}</span>
+        </li>
+    </ul>
+
+    <div class="ratio ratio-21x9 my-3">
+        <iframe src="https://www.youtube.com/embed/07Q9TtRka34?start=6" title="YouTube video" allowfullscreen></iframe>
+    </div>
+
+    <p>Mepkin Abbey proudly introduces the Mepkin App: a progressive web application with plans for iOS and Android launch.</p>
+
+    <p>
+        Moncks Corner, SC – Mepkin Abbey, a haven of spirituality and contemplation, is thrilled to announce the Mepkin App. 
+        This progressive web application brings the tranquility and wisdom of the Abbey directly to you, accessible from any device 
+        with an internet connection.
+    </p>
+
+    <p>
+        The Mepkin App offers daily prayers, virtual tours, meditations, spiritual readings, and exclusive content from the Mepkin Monks. 
+        Participate in virtual retreats, access an extensive library of spiritual texts, and stay updated on upcoming events at Mepkin Abbey.
+    </p>
+
+    <p><strong>Commitment to Privacy and Spiritual Growth</strong></p>
+
+    <p>
+        We prioritize your privacy. All interactions within the app are confidential, ensuring a safe and sacred space for personal growth 
+        and reflection.
+    </p>
+
+    <p><strong>Future Expansion to iOS and Android Platforms</strong></p>
+
+    <p>
+        Currently available as a progressive web application, the Mepkin App will soon be available on iOS and Android platforms, 
+        making it even more accessible for spiritual engagement on smartphones and tablets.
+    </p>
+
+    <p><strong>A Word from Father Joe</strong></p>
+
+    <p>
+        “With the launch of the Mepkin App as a progressive web application, we are laying the foundation for a more connected spiritual 
+        community,” said Father Joe, Superior of Mepkin Abbey. “We are excited about the upcoming releases on iOS and Android, which 
+        will further our mission to provide spiritual support to those seeking peace and purpose. We invite everyone to join us on this 
+        journey of digital hospitality, faith, and discovery.”
+    </p>
+
+    <p><strong>Discover the Mepkin App Today</strong></p>
+
+    <p>
+        The Mepkin App is currently available as a progressive web application and will soon launch on iOS and Android platforms. 
+        Experience the spiritual guidance and community of Mepkin Abbey through this innovative app.
+    </p>
+
+    <p>For more information about Mepkin Abbey and the Mepkin App, visit <a href="https://mepkinapp.org" target="_blank">MepkinApp.org</a></p>
+
+    <p><strong>Contact Information:</strong></p>
+
+    <p>
+        Mepkin Abbey Communications Office<br>
+        1098 Mepkin Abbey Rd,<br>
+        Moncks Corner, SC 29461
+    </p>
+
+    <p><strong>About Mepkin Abbey:</strong></p>
+    <p>
+        Mepkin Abbey is a Trappist monastery in Moncks Corner, South Carolina. It is a place of spiritual retreat, prayer, and contemplation, 
+        following the Cistercian tradition. The Abbey is committed to providing spiritual guidance, fostering a deep understanding of the monastic 
+        way of life, and serving the broader community through its spiritual programs.
+    </p>
+
+    <p><strong>Privacy Policy for Mepkin Abbey App</strong></p>
+
+    <p><strong>Introduction</strong></p>
+    <p>
+        This Privacy Policy outlines the practices of the Mepkin Abbey App regarding the collection, use, and sharing of information. This policy 
+        is dedicated to users of the Mepkin Abbey App and governs the privacy of the data shared within it.
+    </p>
+
+    <p><strong>Information Collection, Use, and Sharing</strong></p>
+    <p>
+        We, the Mepkin Abbey App Team, are the sole custodians of the information collected through the App. The information we gather comes 
+        directly from you when you provide it to us, whether through email, app forms, or any direct interactions. We pledge not to sell or rent 
+        your information.
+    </p>
+
+    <p>
+        The purpose of collecting your information is to enhance your interaction with us, addressing any queries or requests you might have. 
+        Your information will not be disclosed to any third-party, except as needed to fulfill your requests, such as processing orders.
+    </p>
+
+    <p>
+        We may reach out to you in the future via email to inform you about specials, new services, or changes to this Privacy Policy, unless 
+        you instruct us otherwise.
+    </p>
+
+    <p><strong>Your Rights Over Your Information</strong></p>
+    <p>
+        You have the right to opt-out of any future contacts from us at any time. By reaching out to us through the provided email address or 
+        phone number on our website, you can:
+    </p>
+
+    <ul>
+        <li>Inquire about the data we have about you, if any.</li>
+        <li>Change/correct any data we have about you.</li>
+        <li>Request us to delete any data we have about you.</li>
+        <li>Express any concern you have about our use of your data.</li>
+    </ul>
+
+    <p><strong>Security Measures</strong></p>
+    <p>
+        We are committed to protecting your information. Sensitive data submitted via the App is safeguarded both online and offline with 
+        encryption practices, such as the SSL protocol signified by a lock icon in the address bar and the “https” in our web page URL.
+    </p>
+
+    <p>
+        Offline, access to your personal information is restricted to employees who require it to perform their duties. The servers and computers 
+        storing personally identifiable information are maintained in a secure environment.
+    </p>
+
+    <p><strong>Use of Cookies</strong></p>
+    <p>
+        Our App employs “cookies” to enhance your experience by saving your preferences and tracking user trends. These cookies are not linked 
+        to any personally identifiable information.
+    </p>
+
+    <p><strong>External Links</strong></p>
+    <p>
+        The Mepkin Abbey App may contain links to other websites. We caution that we are not responsible for the content or privacy practices of 
+        other sites and encourage you to read their privacy statements.
+    </p>
+
+    <p><strong>Surveys & Contests</strong></p>
+    <p>
+        Occasionally, our App may request information via surveys or contests. Participation is voluntary, and you have the choice to participate 
+        and disclose information. Information collected may be used to contact winners, award prizes, or improve user experience.
+    </p>
+
+    <p><strong>Information Sharing</strong></p>
+    <p>
+        Aggregated demographic information not linked to any personal information may be shared with partners and advertisers. For fulfilling orders, 
+        we might use external shipping companies and credit card processing firms, which will not retain, share, or use your information for any secondary purposes.
+    </p>
+
+    <p>
+        We may collaborate with third parties to provide specific services. Upon signing up for these services, necessary contact information will be shared 
+        with the third party solely for the purpose of delivering these services.
+    </p>
+
+    <p><strong>Concerns</strong></p>
+    <p>
+        Should you have any concerns regarding our privacy practices, please contact us immediately. We are dedicated to ensuring the privacy and security 
+        of your information and strive to promptly address any issues.
+    </p>
+</div>
+<br>
+<br>
+<br>
+
+<script>
+function fetchActiveVisitorsCount() {
+    fetch('/active-visitors/')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('activeUserCount').innerText = data.active_visitors_count;
+        })
+        .catch(error => console.error('Error fetching active visitors count:', error));
+}
+
+// Fetch the active visitor count every 10 seconds
+setInterval(fetchActiveVisitorsCount, 10000); // 10000 milliseconds = 10 seconds
+
+// Also fetch once immediately on page load
+fetchActiveVisitorsCount();
+</script>
+
+<script>
+function sendActivityPing() {
+    fetch('/update-activity/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'), // Ensure CSRF token is sent with POST requests
+            'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin', // Include cookies
+    }).then(response => {
+        if (response.ok) {
+            console.log('Activity ping sent successfully.');
+        } else {
+            console.error('Error sending activity ping.');
+        }
+    }).catch(error => console.error('Error sending activity ping:', error));
+}
+
+// Helper function to get the CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Send an activity ping every 1 minute
+setInterval(sendActivityPing, 60000); // 60000 milliseconds = 1 minute
+</script>
+
+{% include 'navbar.html' %}
+{% endblock %}

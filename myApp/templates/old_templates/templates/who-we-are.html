@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="bg-secondary text-white sticky-top">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center py-2">
+            <h1>
+                <span class="me-4">
+                    <a href="{% url 'the-brothers' %}" class="text-decoration-none text-white">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                </span>
+                Who We Are
+            </h1>
+            <img src="{% static 'MEPKING/logo.png' %}" height="75rem" alt="Mepkin Abbey Logo">
+        </div>
+    </div>
+</div>
+
+<div class="container mt-3">
+    <p>
+        At Mepkin Abbey, we are a community of monks committed to a life of prayer, work, and contemplation. Learn more about our journey and the principles that guide us.
+    </p>
+
+    <div class="row row-cols-1 row-cols-md-2 g-3">
+        <div class="col">
+            <a href="https://mepkinabbey.org/becoming-a-monk/" target="_blank" class="text-decoration-none">
+                <div class="card border-0">
+                    <img src="{% static 'MEPKING/Becoming a monk.jpeg' %}" class="card-img rounded-3" alt="Becoming a Monk at Mepkin Abbey" style="height: 15rem; object-fit: cover;">
+                    <div class="card-img-overlay">
+                        <h6 class="card-text fw-bold position-absolute bottom-0 mb-2 p-2" style="color: #fff; background-color: rgba(0, 0, 0, 0.6)">
+                            Becoming a Monk
+                        </h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col">
+            <a href="https://mepkinabbey.org/mission-statement/" target="_blank" class="text-decoration-none">
+                <div class="card border-0">
+                    <img src="{% static 'MEPKING/mission statement.jpeg' %}" class="card-img rounded-3" alt="Mission Statement of Mepkin Abbey" style="height: 15rem; object-fit: cover;">
+                    <div class="card-img-overlay">
+                        <h6 class="card-text fw-bold position-absolute bottom-0 mb-2 p-2" style="color: #fff; background-color: rgba(0, 0, 0, 0.6)">
+                            Mission Statement
+                        </h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<br>
+{% include 'navbar.html' %}
+{% endblock %}

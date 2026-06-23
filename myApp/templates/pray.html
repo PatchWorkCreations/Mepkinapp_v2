@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Submit a Prayer — Mepkin Abbey{% endblock %}
+{% block description %}Share your prayer intentions with the monastic community of Mepkin Abbey.{% endblock %}
+
+{% block content %}
+  <div class="topbar">
+    <a href="/" class="back" aria-label="Back"><i class="fa-solid fa-arrow-left"></i></a>
+    <div class="title">Submit a Prayer</div>
+    <img class="brand-dot" src="https://www.mepkinapp.org/static/MEPKING/logo.png" alt="Mepkin Abbey">
+  </div>
+
+  <div class="hero" style="height: 26vh; min-height: 150px;">
+    <div class="hero-bg" style="background-image: url('https://www.mepkinapp.org/static/MEPKING/oak-allee4.jpeg');"></div>
+    <div class="hero-scrim"></div>
+    <div class="hero-caption">
+      <div class="hero-eyebrow">Prayer Request</div>
+      <div class="hero-title">We will pray with you</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    {% if submitted %}
+    <div class="alert-success">
+      <i class="fa-solid fa-circle-check" style="color: var(--gold);"></i>
+      Thank you — your intention has been received and will be held in prayer.
+    </div>
+    {% endif %}
+
+    <p class="prose" style="margin-bottom: 20px;">
+      The brothers of Mepkin Abbey hold the intentions of all who reach out to us. Share yours below.
+    </p>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="field">
+        <label for="name">Your name</label>
+        <input type="text" id="name" name="name" placeholder="Jane Doe">
+      </div>
+      <div class="field">
+        <label for="email">Email <span style="text-transform:none; color: var(--muted-2); font-weight: 400;">(optional)</span></label>
+        <input type="email" id="email" name="email" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label for="intention">Prayer type</label>
+        <select id="intention" name="intention">
+          <option>Thanksgiving</option>
+          <option>Healing</option>
+          <option>Guidance</option>
+          <option>A loved one</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="message">Your intention</label>
+        <textarea id="message" name="message" rows="5" placeholder="Share what is on your heart…"></textarea>
+      </div>
+      <button type="submit" class="btn-gold btn-block">
+        <i class="fa-solid fa-paper-plane"></i> Send to the brothers
+      </button>
+    </form>
+  </div>
+{% endblock %}
